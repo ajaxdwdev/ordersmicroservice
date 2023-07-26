@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.List;
@@ -22,13 +23,14 @@ public class Order {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id")
-  private Integer id;
+  @Column(name = "order_id")
+  private Long orderId;
 
   @Column(name = "order_desc")
   private String productDescription;
 
   @OneToMany(cascade = CascadeType.ALL) // Establishes a one-to-many relationship with Product
+  @JoinColumn(name = "order_id")
   private List<Product> products;
 
   @Column(name = "order_price")

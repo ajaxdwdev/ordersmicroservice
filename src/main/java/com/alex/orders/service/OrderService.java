@@ -1,6 +1,7 @@
 package com.alex.orders.service;
 
 import com.alex.orders.entity.Order;
+import com.alex.orders.entity.Product;
 import com.alex.orders.repository.OrderRepo;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,5 +44,9 @@ public class OrderService {
 
   public void deleteOrder(Long id) {
     orderRepo.deleteById(id);
+  }
+
+  public boolean isOrderWithProductsExists(List<Product> products) {
+    return orderRepo.existsOrderWithProducts(products);
   }
 }
