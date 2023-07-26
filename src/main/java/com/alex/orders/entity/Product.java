@@ -16,17 +16,17 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "products")
 public class Product {
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long productId;
-    
-    @Column(name="product_name")
-    private String productName;
 
-    @Column(name="product_quantity")
-    private int productQuantity;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long productId;
 
-    @Column(name="price_per_unit")
-    private double pricePerUnit;
+  @Column(name = "product_name")
+  private String productName;
+
+  @Column(name = "product_quantity")
+  private int productQuantity;
+
+  @Column(name = "price_per_unit")
+  private double pricePerUnit;
 }

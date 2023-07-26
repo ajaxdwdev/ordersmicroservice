@@ -30,7 +30,7 @@ public class OrderService {
 
   //maybe invoke the external validation here when creating an order
   //check in repo if there already exists an order with the same list of products
-  //swagger by openapi?
+  //swagger by openapi? Mock api? mockapi.io
   public Order createOrder(Order order) {
     Order newOrder = new Order();
     newOrder.setProductDescription(order.getProductDescription());
