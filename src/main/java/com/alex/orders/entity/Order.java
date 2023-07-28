@@ -6,7 +6,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.List;
@@ -27,27 +26,15 @@ public class Order {
   private Long orderId;
 
   @Column(name = "order_desc")
-  private String productDescription;
+  private String orderDescription;
 
-  @OneToMany(cascade = CascadeType.ALL) // Establishes a one-to-many relationship with Product
-  @JoinColumn(name = "order_id")
-  private List<Product> products;
+  @OneToMany(
+    mappedBy = "order",
+    cascade = CascadeType.ALL,
+    orphanRemoval = true
+  ) // Establishes a one-to-many relationship with Product
+  private List<OrderProducts> orderProducts;
 
   @Column(name = "order_price")
   private double orderPrice;
-
-  public void setProducts(List<Product> products) {
-    this.products = products;
-    calculateOrderPrice();
-  }
-
-  private void calculateOrderPrice() {
-    this.orderPrice =
-      products
-        .stream()
-        .mapToDouble(product ->
-          product.getPricePerUnit() * product.getProductQuantity()
-        )
-        .sum();
-  }
 }

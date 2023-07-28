@@ -1,7 +1,9 @@
 package com.alex.orders.service;
 
 import com.alex.orders.entity.Order;
-import com.alex.orders.entity.Product;
+import com.alex.orders.entity.OrderProducts;
+import com.alex.orders.exceptions.OrderProductAlreadyExistsException;
+import com.alex.orders.repository.OrderProductsRepo;
 import com.alex.orders.repository.OrderRepo;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +17,43 @@ public class OrderService {
   @Autowired
   OrderRepo orderRepo;
 
+  @Autowired
+  OrderProductsRepo orderProductsRepo;
+
+  public Order getOrderById(Long id) {
+    return orderRepo.findById(id).orElse(null);
+  }
+
+  public List<Order> getAllOrders() {
+    return orderRepo.findAll();
+  }
+
+  public Order createOrder(Order order) {
+    if (orderRepo.existsById(order.getOrderId())) {
+      // Check if any of the orderProducts already exist in the database.
+      for (OrderProducts orderProduct : order.getOrderProducts()) {
+        if (
+          orderProduct.getId() != null &&
+          orderProductsRepo.existsById(orderProduct.getId())
+        ) {
+          throw new OrderProductAlreadyExistsException(
+            "OrderProduct with ID " + orderProduct.getId() + " already exists."
+          );
+        }
+      }
+    }
+
+    return orderRepo.save(order);
+  }
+
+  public boolean deleteOrderById(Long id) {
+    if (orderRepo.existsById(id)) {
+      orderRepo.deleteById(id);
+      return true;
+    }
+    return false;
+  }
+  /*
   public List<Order> getAllOrder() {
     List<Order> ordersList = orderRepo.findAll();
 
@@ -29,14 +68,11 @@ public class OrderService {
     return orderRepo.findById(id);
   }
 
-  //maybe invoke the external validation here when creating an order
-  //check in repo if there already exists an order with the same list of products
-  //swagger by openapi? Mock api? mockapi.io
   public Order createOrder(Order order) {
     Order newOrder = new Order();
-    newOrder.setProductDescription(order.getProductDescription());
+    newOrder.setOrderDescription(order.getOrderDescription());
     newOrder.setOrderPrice(order.getOrderPrice());
-    newOrder.setProducts(order.getProducts()); //compare this list with other orders in repo
+    newOrder.setOrderProducts(order.getOrderProducts()); //compare this list with other orders in repo
     newOrder = orderRepo.save(newOrder);
 
     return newOrder;
@@ -46,7 +82,9 @@ public class OrderService {
     orderRepo.deleteById(id);
   }
 
-  public boolean isOrderWithProductsExists(List<Product> products) {
-    return orderRepo.existsOrderWithProducts(products);
+  public boolean isOrderWithProductsExists(List<OrderProducts> orderProducts) {
+    return orderRepo.existsOrderWithProducts(orderProducts);
   }
+  */
+
 }
