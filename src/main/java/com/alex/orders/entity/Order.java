@@ -22,30 +22,19 @@ public class Order {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id")
-  private Integer id;
+  @Column(name = "order_id")
+  private Long orderId;
 
   @Column(name = "order_desc")
-  private String productDescription;
+  private String orderDescription;
 
-  @OneToMany(cascade = CascadeType.ALL) // Establishes a one-to-many relationship with Product
-  private List<Product> products;
+  @OneToMany(
+    mappedBy = "order",
+    cascade = CascadeType.ALL,
+    orphanRemoval = true
+  ) // Establishes a one-to-many relationship with Product
+  private List<OrderProducts> orderProducts;
 
   @Column(name = "order_price")
   private double orderPrice;
-
-  public void setProducts(List<Product> products) {
-    this.products = products;
-    calculateOrderPrice();
-  }
-
-  private void calculateOrderPrice() {
-    this.orderPrice =
-      products
-        .stream()
-        .mapToDouble(product ->
-          product.getPricePerUnit() * product.getProductQuantity()
-        )
-        .sum();
-  }
 }
