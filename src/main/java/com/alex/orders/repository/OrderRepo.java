@@ -1,8 +1,6 @@
 package com.alex.orders.repository;
 
 import com.alex.orders.entity.Order;
-import com.alex.orders.entity.OrderProducts;
-import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
