@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -37,4 +38,11 @@ public class Order {
 
   @Column(name = "order_price")
   private double orderPrice;
+
+  public void add(OrderProducts newOrderProduct) {
+    if (orderProducts == null) {
+      orderProducts = new ArrayList<>();
+    }
+    orderProducts.add(newOrderProduct);
+  }
 }

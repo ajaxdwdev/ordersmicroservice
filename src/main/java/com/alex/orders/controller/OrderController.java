@@ -39,12 +39,12 @@ public class OrderController {
   }
 
   @PostMapping
-  public ResponseEntity<Order> createOrder(@RequestBody Order order) {
+  public ResponseEntity<?> createOrder(@RequestBody Order order) {
     try {
       Order savedOrder = orderService.createOrder(order);
       return ResponseEntity.status(HttpStatus.CREATED).body(savedOrder);
     } catch (OrderProductAlreadyExistsException e) {
-      return ResponseEntity.status(HttpStatus.CONFLICT).build();
+      return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     } catch (Exception e) {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }

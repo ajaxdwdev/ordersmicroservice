@@ -26,22 +26,46 @@ public class OrderService {
     return orderRepo.findAll();
   }
 
-  public Order createOrder(Order order) {
-    if (orderRepo.existsById(order.getOrderId())) {
-      // Check if any of the orderProducts already exist in the database.
-      for (OrderProducts orderProduct : order.getOrderProducts()) {
-        if (
-          orderProduct.getId() != null &&
-          orderProductsRepo.existsById(orderProduct.getId())
-        ) {
-          throw new OrderProductAlreadyExistsException(
-            "OrderProduct with ID " + orderProduct.getId() + " already exists."
-          );
-        }
+  public Order createOrder(Order order)
+    throws OrderProductAlreadyExistsException {
+    if (
+      order.getOrderId() != null && orderRepo.existsById(order.getOrderId())
+    ) {
+      throw new OrderProductAlreadyExistsException(
+        "Order with ID " + order.getOrderId() + " already exists."
+      );
+    }
+    // Check if any of the orderProducts already exist in the database.
+    for (OrderProducts orderProduct : order.getOrderProducts()) {
+      if (
+        orderProductsRepo.existsByProductIdAndProductQuantity(
+          orderProduct.getProductId(),
+          orderProduct.getProductQuantity()
+        )
+      ) {
+        throw new OrderProductAlreadyExistsException(
+          "OrderProduct with productId " +
+          orderProduct.getProductId() +
+          " and productQuantity " +
+          orderProduct.getProductQuantity() +
+          " already exists. You already have an order for this item."
+        );
       }
     }
-
-    return orderRepo.save(order);
+    //create the new order
+    Order newOrder = new Order();
+    newOrder.setOrderId(order.getOrderId());
+    newOrder.setOrderDescription(order.getOrderDescription());
+    newOrder.setOrderPrice(order.getOrderPrice());
+    for (OrderProducts product : order.getOrderProducts()) {
+      OrderProducts newOrderProduct = new OrderProducts();
+      newOrderProduct.setOrder(newOrder);
+      newOrderProduct.setProductId(product.getProductId());
+      newOrderProduct.setProductQuantity(product.getProductQuantity());
+      newOrderProduct.setPricePerUnit(product.getPricePerUnit());
+      newOrder.add(newOrderProduct);
+    }
+    return orderRepo.save(newOrder);
   }
 
   public boolean deleteOrderById(Long id) {
